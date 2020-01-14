@@ -18,7 +18,9 @@ impl ProjectBuilderCommand {
     }
 
     fn execute(&mut self) {
-        self.raw_cmd.status().expect("Cannot execute command to create new game project");
+        self.raw_cmd
+            .status()
+            .expect("Cannot execute command to create new game project");
     }
 
     fn get_default_tool_name() -> &'static str {
@@ -51,6 +53,8 @@ impl ProjectBuilder {
 }
 
 #[no_mangle]
-pub extern "C" fn create_new_project() {
+pub extern "C" fn create_new_project(p_project_name: *const std::os::raw::c_char) {
+    let c_project_name = unsafe { std::ffi::CStr::from_ptr(p_project_name) };
+    let final_name = c_project_name.to_str().expect("cannot convert to str");
     ProjectBuilder::make_directory();
 }
