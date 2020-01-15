@@ -25,9 +25,15 @@ class Ui_MainWindow(object):
         self.label = QLabel(self.centralwidget)
         self.label.setObjectName(u"label")
         self.label.setGeometry(QRect(40, 20, 171, 91))
-        self.pushButton = QPushButton(self.centralwidget)
-        self.pushButton.setObjectName(u"pushButton")
-        self.pushButton.setGeometry(QRect(180, 20, 341, 101))
+        self.btnNewProject = QPushButton(self.centralwidget)
+        self.btnNewProject.setObjectName(u"btnNewProject")
+        self.btnNewProject.setGeometry(QRect(180, 20, 341, 101))
+        self.editNewProjectName = QTextEdit(self.centralwidget)
+        self.editNewProjectName.setObjectName(u"editNewProjectName")
+        self.editNewProjectName.setGeometry(QRect(170, 130, 291, 51))
+        self.label_2 = QLabel(self.centralwidget)
+        self.label_2.setObjectName(u"label_2")
+        self.label_2.setGeometry(QRect(30, 150, 111, 41))
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QMenuBar(MainWindow)
         self.menubar.setObjectName(u"menubar")
@@ -45,6 +51,8 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
         self.label.setText(QCoreApplication.translate("MainWindow", u"Work in progress", None))
-        self.pushButton.setText(QCoreApplication.translate("MainWindow", u"New project", None))
+        self.btnNewProject.setText(QCoreApplication.translate("MainWindow", u"New project", None))
+        self.editNewProjectName.setPlaceholderText(QCoreApplication.translate("MainWindow", u"choose project name", None))
+        self.label_2.setText(QCoreApplication.translate("MainWindow", u"project name", None))
     # retranslateUi
 

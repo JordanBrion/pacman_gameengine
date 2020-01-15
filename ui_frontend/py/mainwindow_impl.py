@@ -13,9 +13,9 @@ class MainWindow_Impl(QMainWindow):
         self.connect_slots()
 
     def connect_slots(self):
-        self.ui.pushButton.clicked.connect(self.cb_push_button_clicked)
+        self.ui.btnNewProject.clicked.connect(self.cb_push_button_clicked)
 
     @Slot()
     def cb_push_button_clicked(self):
-        self.ffi.create_new_project();
+        self.ffi.create_new_project(self.ui.editNewProjectName.toPlainText());
         

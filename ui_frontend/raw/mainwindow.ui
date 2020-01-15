@@ -27,7 +27,7 @@
      <string>Work in progress</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="btnNewProject">
     <property name="geometry">
      <rect>
       <x>180</x>
@@ -38,6 +38,32 @@
     </property>
     <property name="text">
      <string>New project</string>
+    </property>
+   </widget>
+   <widget class="QTextEdit" name="editNewProjectName">
+    <property name="geometry">
+     <rect>
+      <x>170</x>
+      <y>130</y>
+      <width>291</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="placeholderText">
+     <string>choose project name</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>150</y>
+      <width>111</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>project name</string>
     </property>
    </widget>
   </widget>
