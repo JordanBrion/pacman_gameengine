@@ -41,13 +41,13 @@ impl ProjectBuilder {
         "/tmp/no_engines"
     }
 
-    fn make_directory() {
+    fn make_directory(project_name: &str) {
         std::fs::create_dir(Self::get_default_project_directories_location());
-        Self::fill_project_with_default_files();
+        Self::fill_project_with_default_files(project_name);
     }
 
-    fn fill_project_with_default_files() {
-        let mut cmd = ProjectBuilderCommand::new("not_uncharted_12");
+    fn fill_project_with_default_files(project_name: &str) {
+        let mut cmd = ProjectBuilderCommand::new(project_name);
         cmd.execute();
     }
 }
@@ -55,6 +55,7 @@ impl ProjectBuilder {
 #[no_mangle]
 pub extern "C" fn create_new_project(p_project_name: *const std::os::raw::c_char) {
     let c_project_name = unsafe { std::ffi::CStr::from_ptr(p_project_name) };
+    // TODO improve panic handling
     let final_name = c_project_name.to_str().expect("cannot convert to str");
-    ProjectBuilder::make_directory();
+    ProjectBuilder::make_directory(final_name);
 }
