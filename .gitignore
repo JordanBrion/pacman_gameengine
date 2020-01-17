@@ -2,3 +2,4 @@
 **/*.rs.bk
 **/__pycache__/*
 .vscode/*
+CMakeLists.txt.user
