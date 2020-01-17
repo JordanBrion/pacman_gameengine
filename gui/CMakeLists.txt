@@ -12,7 +12,7 @@ set(
     )
 
 add_executable(
-    editor
+    ${PROJECT_NAME}
     ${ALL_FILES}
     )
 
@@ -22,7 +22,7 @@ set(
     )
 
 target_link_libraries(
-    editor
+    ${PROJECT_NAME}
     ${ALL_LIBS}
     )
 
