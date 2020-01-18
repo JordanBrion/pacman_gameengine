@@ -1,5 +1,5 @@
 [package]
-name = "ffi"
+name = "xxffi"
 version = "0.1.0"
 authors = ["Jordan BRION <jrd.brion@gmail.com>"]
 edition = "2018"

@@ -12,7 +12,7 @@ set(
     )
 
 add_executable(
-    ${PROJECT_NAME}
+    gui
     ${ALL_FILES}
     )
 
@@ -22,8 +22,8 @@ set(
     )
 
 target_link_libraries(
-    ${PROJECT_NAME}
+    gui
     ${ALL_LIBS}
     )
 
-#add_dependencies(gui client)
+add_dependencies(gui xxffi)
