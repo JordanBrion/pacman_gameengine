@@ -6,6 +6,7 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 find_package(Qt5 COMPONENTS Widgets REQUIRED)
 
+get_target_property(XXFFI_BUILD_DIR xxffi LOCATION)
 set(ROOT_BUILD_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/..)
 
 include_directories(
@@ -13,7 +14,7 @@ include_directories(
     )
 
 link_directories(
-    ${ROOT_BUILD_DIRECTORY}/xxffi/debug/debug/
+    ${XXFFI_BUILD_DIR}/debug/debug/
     )
 
 set(
@@ -33,7 +34,7 @@ target_link_libraries(
 
 target_link_libraries(
     gui
-    ${ROOT_BUILD_DIRECTORY}/xxffi/debug/debug/libxxffi.so
+    ${XXFFI_BUILD_DIR}/debug/debug/libxxffi.so
     )
 
 add_dependencies(
