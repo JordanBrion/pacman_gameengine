@@ -27,9 +27,17 @@ add_custom_command(
     COMMAND CARGO_TARGET_DIR=${DST_LIB_DIR} ${CARGO_CMD}
     )
 
+add_custom_command(
+    OUTPUT generate-ffi-headers
+    COMMENT "Generating header files for xxffi..."
+    DEPENDS compile-ffi
+    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+    COMMAND cbindgen ${CMAKE_CURRENT_SOURCE_DIR} -o xxffi.h
+    )
+
 add_custom_target(
     xxffi ALL
-    DEPENDS compile-ffi
+    DEPENDS generate-ffi-headers
     )
 
 set_target_properties(xxffi PROPERTIES LOCATION ${CMAKE_CURRENT_BINARY_DIR})
