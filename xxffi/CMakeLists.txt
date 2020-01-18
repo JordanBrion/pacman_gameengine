@@ -19,12 +19,17 @@ add_custom_command(
     COMMAND cargo install cbindgen || true
     )
 
-add_custom_target(
-    xxffi ALL
+add_custom_command(
+    OUTPUT compile-ffi
     COMMENT "Compiling xxffi dependency..."
     DEPENDS install-cbindgen
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     COMMAND CARGO_TARGET_DIR=${DST_LIB_DIR} ${CARGO_CMD}
+    )
+
+add_custom_target(
+    xxffi ALL
+    DEPENDS compile-ffi
     )
 
 set_target_properties(xxffi PROPERTIES LOCATION ${CMAKE_CURRENT_BINARY_DIR})
