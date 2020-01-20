@@ -14,9 +14,10 @@ link_directories(
     ${XXFFI_LIB_DIR}
     )
 
-set(
+file(
+    GLOB_RECURSE
     ALL_FILES
-    main.cpp
+    src/*
     )
 
 add_executable(
