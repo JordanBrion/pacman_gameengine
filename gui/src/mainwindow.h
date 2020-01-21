@@ -18,7 +18,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(VulkanWindow *w, QPlainTextEdit *logWidget);
+    explicit MainWindow(VulkanWindow *w);
 
 public slots:
     void onVulkanInfoReceived(const QString &text);

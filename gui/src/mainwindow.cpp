@@ -10,7 +10,7 @@
 #include <QTabWidget>
 #include "ui_mainwindow.h"
 
-MainWindow::MainWindow(VulkanWindow *w, QPlainTextEdit *logWidget)
+MainWindow::MainWindow(VulkanWindow *w)
     : m_window(w),
         ui(new Ui::MainWindow)
 {
