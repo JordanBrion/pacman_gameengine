@@ -1,9 +1,12 @@
+#ifndef SCENE_3D_RENDERER_H
+#define SCENE_3D_RENDERER_H
 
 #include <QVulkanWindow>
-class TriangleRenderer : public QVulkanWindowRenderer
+
+class Scene3dRenderer : public QVulkanWindowRenderer
 {
 public:
-    TriangleRenderer(QVulkanWindow *w, bool msaa = false);
+    Scene3dRenderer(QVulkanWindow *w, bool msaa = false);
     void initResources() override;
     void initSwapChainResources() override;
     void releaseSwapChainResources() override;
@@ -25,3 +28,5 @@ protected:
     QMatrix4x4 m_proj;
     float m_rotation = 0.0f;
 };
+
+#endif

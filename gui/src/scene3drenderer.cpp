@@ -1,7 +1,8 @@
+#include "scene3drenderer.h"
 
-#include "trianglerenderer.h"
 #include <QVulkanFunctions>
 #include <QFile>
+
 // Note that the vertex data and the projection matrix assume OpenGL. With
 // Vulkan Y is negated in clip space and the near/far plane is at 0/1 instead
 // of -1/1. These will be corrected for by an extra transformation when
@@ -16,7 +17,7 @@ static inline VkDeviceSize aligned(VkDeviceSize v, VkDeviceSize byteAlign)
 {
     return (v + byteAlign - 1) & ~(byteAlign - 1);
 }
-TriangleRenderer::TriangleRenderer(QVulkanWindow *w, bool msaa)
+Scene3dRenderer::Scene3dRenderer(QVulkanWindow *w, bool msaa)
     : m_window(w)
 {
     if (msaa) {
@@ -31,7 +32,7 @@ TriangleRenderer::TriangleRenderer(QVulkanWindow *w, bool msaa)
         }
     }
 }
-VkShaderModule TriangleRenderer::createShader(const QString &name)
+VkShaderModule Scene3dRenderer::createShader(const QString &name)
 {
     QFile file(name);
     if (!file.open(QIODevice::ReadOnly)) {
@@ -53,7 +54,7 @@ VkShaderModule TriangleRenderer::createShader(const QString &name)
     }
     return shaderModule;
 }
-void TriangleRenderer::initResources()
+void Scene3dRenderer::initResources()
 {
     qDebug("initResources");
     VkDevice dev = m_window->device();
@@ -297,7 +298,7 @@ void TriangleRenderer::initResources()
     if (fragShaderModule)
         m_devFuncs->vkDestroyShaderModule(dev, fragShaderModule, nullptr);
 }
-void TriangleRenderer::initSwapChainResources()
+void Scene3dRenderer::initSwapChainResources()
 {
     qDebug("initSwapChainResources");
     // Projection matrix
@@ -306,11 +307,11 @@ void TriangleRenderer::initSwapChainResources()
     m_proj.perspective(45.0f, sz.width() / (float) sz.height(), 0.01f, 100.0f);
     m_proj.translate(0, 0, -4);
 }
-void TriangleRenderer::releaseSwapChainResources()
+void Scene3dRenderer::releaseSwapChainResources()
 {
     qDebug("releaseSwapChainResources");
 }
-void TriangleRenderer::releaseResources()
+void Scene3dRenderer::releaseResources()
 {
     qDebug("releaseResources");
     VkDevice dev = m_window->device();
@@ -343,7 +344,7 @@ void TriangleRenderer::releaseResources()
         m_bufMem = VK_NULL_HANDLE;
     }
 }
-void TriangleRenderer::startNextFrame()
+void Scene3dRenderer::startNextFrame()
 {
     VkDevice dev = m_window->device();
     VkCommandBuffer cb = m_window->currentCommandBuffer();
