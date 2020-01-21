@@ -1,7 +1,10 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef MAIN_WINDOW_H
+#define MAIN_WINDOW_H
 
 #include <QMainWindow>
+#include <QVulkanInstance>
+
+#include "scene3d.h"
 
 namespace Ui {
 class MainWindow;
@@ -12,11 +15,12 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
+    explicit MainWindow();
 
 private:
-    Ui::MainWindow *ui;
+    Ui::MainWindow *m_pUi;
+    QVulkanInstance m_vulkanInstance;
+    Scene3d m_scene;
 };
 
-#endif // MAINWINDOW_H
+#endif
