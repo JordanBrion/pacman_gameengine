@@ -7,18 +7,32 @@ class QTabWidget;
 class QPlainTextEdit;
 class QLCDNumber;
 
+#include <QVulkanInstance>
+
 #include <QMainWindow>
 
 namespace Ui {
 class MainWindow;
 }
 
+class VulkanWindow : public QVulkanWindow
+{
+    Q_OBJECT
+
+public:
+    QVulkanWindowRenderer *createRenderer() override;
+
+signals:
+    void vulkanInfoReceived(const QString &text);
+    void frameQueued(int colorValue);
+};
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    explicit MainWindow(VulkanWindow *w);
+    explicit MainWindow();
 
 public slots:
     void onVulkanInfoReceived(const QString &text);
@@ -26,7 +40,8 @@ public slots:
     void onGrabRequested();
 
 private:
-    VulkanWindow *m_window;
+    QVulkanInstance inst;
+    VulkanWindow m_window;
     QTabWidget *m_infoTab;
     QPlainTextEdit *m_info;
     QLCDNumber *m_number;
@@ -40,16 +55,4 @@ public:
 
     void initResources() override;
     void startNextFrame() override;
-};
-
-class VulkanWindow : public QVulkanWindow
-{
-    Q_OBJECT
-
-public:
-    QVulkanWindowRenderer *createRenderer() override;
-
-signals:
-    void vulkanInfoReceived(const QString &text);
-    void frameQueued(int colorValue);
 };

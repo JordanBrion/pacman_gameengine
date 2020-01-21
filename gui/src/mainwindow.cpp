@@ -8,14 +8,20 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QTabWidget>
+
 #include "ui_mainwindow.h"
 
-MainWindow::MainWindow(VulkanWindow *w)
-    : m_window(w),
+MainWindow::MainWindow()
+    : m_window(),
         ui(new Ui::MainWindow)
 {
+    if (!inst.create())
+        qFatal("Failed to create Vulkan instance: %d", inst.errorCode());
+
+    inst.setLayers(QByteArrayList() << "VK_LAYER_LUNARG_standard_validation");
+        m_window.setVulkanInstance(&inst);
         ui->setupUi(this);
-        QWidget *wrapper = QWidget::createWindowContainer(w);
+        QWidget *wrapper = QWidget::createWindowContainer(&m_window);
 
     m_info = new QPlainTextEdit;
 //    m_info->setReadOnly(true);
@@ -58,12 +64,12 @@ void MainWindow::onFrameQueued(int colorValue)
 
 void MainWindow::onGrabRequested()
 {
-    if (!m_window->supportsGrab()) {
+    if (!m_window.supportsGrab()) {
         QMessageBox::warning(this, tr("Cannot grab"), tr("This swapchain does not support readbacks."));
         return;
     }
 
-    QImage img = m_window->grab();
+    QImage img = m_window.grab();
 
     // Our startNextFrame() implementation is synchronous so img is ready to be
     // used right here.
