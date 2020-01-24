@@ -10,3 +10,6 @@ edition = "2018"
 crate-type = ["cdylib"]
 
 [dependencies]
+serde = "1.0.104"
+serde_derive = "1.0.104"
+serde_json = "1.0.0"
