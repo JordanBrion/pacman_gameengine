@@ -16,7 +16,7 @@ add_custom_command(
     )
 
 add_custom_command(
-    OUTPUT ${LIB_ABS_PATH}
+    OUTPUT compile-xxffi
     COMMENT "Compiling xxffi dependency..."
     DEPENDS install-cbindgen
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
@@ -24,16 +24,17 @@ add_custom_command(
     )
 
 add_custom_command(
+    OUTPUT ${LIB_ABS_PATH}
     OUTPUT generate-ffi-headers
     COMMENT "Generating header files for xxffi..."
-    DEPENDS ${LIB_ABS_PATH}
+    DEPENDS compile-xxffi
     WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     COMMAND cbindgen ${CMAKE_CURRENT_SOURCE_DIR} -o xxffi.h
     )
 
 add_custom_target(
     xxffi ALL
-    DEPENDS generate-ffi-headers
+    DEPENDS ${LIB_ABS_PATH}
     )
 
 set_target_properties(xxffi PROPERTIES LIB_LOCATION ${CMAKE_CURRENT_BINARY_DIR}/${BUILD_TYPE})
