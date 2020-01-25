@@ -14,5 +14,8 @@ int main(int argc, char *argv[])
     const auto serialized = serialize_rust_struct();
     qDebug() << "serialized !!" << serialized;
     delete[] serialized;
+    const auto instance = get_rust_instance();
+    qDebug() << instance.x;
+    qDebug() << instance.y;
     return a.exec();
 }
