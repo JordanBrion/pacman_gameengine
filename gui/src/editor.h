@@ -5,6 +5,8 @@
 
 #include "mainwindow.h"
 
+#include <xxffi/xxffi.h>
+
 /*!
  * \brief Subclass of QApplication representing the editor
  */
@@ -21,6 +23,7 @@ public:
 
 private:
     MainWindow m_mainWindow;
+    EditorLogic m_logic;
 };
 
 #endif      // EDITOR_H
