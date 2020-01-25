@@ -17,6 +17,19 @@ pub struct Point {
     y: i32,
 }
 
+impl Point  {
+
+    fn hello(&self) {
+        println!("Hello from rust method!!!");
+    }
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn my_point_print_hello(me: *const Point) {
+    let me = &*me;
+    me.hello();
+}
+
 #[no_mangle]
 pub unsafe extern "C" fn serialize_rust_struct() -> *const c_char {
     let p1 = Point { x: 100, y: 200 };
