@@ -9,8 +9,9 @@
  * \param argc
  * \param argv
  */
-Editor::Editor(int argc, char* argv[]) :
-    QApplication(argc, argv)
+Editor::Editor(int argc, char* argv[])
+    : QApplication(argc, argv)
+    , m_mainWindow()
 {
     hello_from_rust();
     const auto serialized = serialize_rust_struct();
@@ -20,4 +21,5 @@ Editor::Editor(int argc, char* argv[]) :
     qDebug() << point.x;
     qDebug() << point.y;
     my_point_print_hello(&point);
+    m_mainWindow.show();
 }

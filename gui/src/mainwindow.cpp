@@ -22,4 +22,5 @@ MainWindow::MainWindow() :
     QWidget *wrapper = QWidget::createWindowContainer(&m_scene);
 
     m_pUi->verticalLayout->addWidget(wrapper, 5);
+    resize(1024, 768);
 }

@@ -3,6 +3,8 @@
 
 #include <QApplication>
 
+#include "mainwindow.h"
+
 /*!
  * \brief Subclass of QApplication representing the editor
  */
@@ -18,6 +20,7 @@ public:
     Editor& operator=(Editor&& other) = delete;
 
 private:
+    MainWindow m_mainWindow;
 };
 
 #endif      // EDITOR_H
