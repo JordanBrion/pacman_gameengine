@@ -1,9 +1,21 @@
 extern crate serde;
 extern crate serde_json;
+extern crate ash;
 
 use serde::{Deserialize, Serialize};
 use std::ffi::{CStr, CString};
 use std::os::raw::c_char;
+use ash::vk::Handle;
+
+#[repr(C)]
+pub struct VulkanContext {
+    instance: u64
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn create_vulkan_context() ->  VulkanContext {
+    VulkanContext { instance: 12 }
+}
 
 #[no_mangle]
 pub unsafe extern "C" fn hello_from_rust() {

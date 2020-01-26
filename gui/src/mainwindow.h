@@ -6,6 +6,8 @@
 
 #include "scene3d.h"
 
+#include <xxffi/xxffi.h>
+
 namespace Ui {
 class MainWindow;
 }
@@ -19,6 +21,7 @@ public:
 
 private:
     Ui::MainWindow *m_pUi;
+    xxffi::VulkanContext m_context;
     QVulkanInstance m_vulkanInstance;
     Scene3d m_scene;
 };

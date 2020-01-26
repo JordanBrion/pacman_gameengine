@@ -7,17 +7,14 @@
 
 #include "ui_mainwindow.h"
 
-MainWindow::MainWindow() :
-    QMainWindow(),
-    m_pUi(new Ui::MainWindow),
-    m_vulkanInstance(),
-    m_scene()
+MainWindow::MainWindow()
+    : QMainWindow()
+    , m_pUi(new Ui::MainWindow)
+    , m_context(xxffi::create_vulkan_context())
+    , m_vulkanInstance()
 {
     m_pUi->setupUi(this);
-    if (!m_vulkanInstance.create())
-        qFatal("Failed to create Vulkan instance: %d", m_vulkanInstance.errorCode());
-
-    m_vulkanInstance.setLayers(QByteArrayList() << "VK_LAYER_LUNARG_standard_validation");
+    m_vulkanInstance.setVkInstance(reinterpret_cast<VkInstance>(m_context.instance));
     m_scene.setVulkanInstance(&m_vulkanInstance);
     QWidget *wrapper = QWidget::createWindowContainer(&m_scene);
 
