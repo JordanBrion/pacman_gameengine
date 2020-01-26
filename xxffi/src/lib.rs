@@ -1,20 +1,31 @@
+extern crate ash;
 extern crate serde;
 extern crate serde_json;
-extern crate ash;
 
 use serde::{Deserialize, Serialize};
 use std::ffi::{CStr, CString};
 use std::os::raw::c_char;
+
+use ash::version::EntryV1_0;
+use ash::version::InstanceV1_0;
 use ash::vk::Handle;
 
-#[repr(C)]
 pub struct VulkanContext {
-    instance: u64
+    instance: ash::vk::Instance
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn create_vulkan_context() ->  VulkanContext {
-    VulkanContext { instance: 12 }
+pub unsafe extern "C" fn create_vulkan_context() -> *mut VulkanContext {
+    let p_context = Box::new(VulkanContext {
+        instance: ash::vk::Instance::null()
+    });
+    Box::into_raw(p_context)
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn import_vulkan_instance(p_context: *mut VulkanContext, instance_handle: u64) {
+    println!("vulkan instance is {}", instance_handle);
+    (*p_context).instance = ash::vk::Instance::from_raw(instance_handle);
 }
 
 #[no_mangle]
@@ -29,8 +40,7 @@ pub struct Point {
     y: i32,
 }
 
-impl Point  {
-
+impl Point {
     fn hello(&self) {
         println!("Hello from rust method!!!");
     }
