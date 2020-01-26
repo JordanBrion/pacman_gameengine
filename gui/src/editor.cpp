@@ -2,6 +2,8 @@
 
 #include <QDebug>
 
+#include <xxffi/xxffi.h>
+
 /*!
  * \brief Editor::Editor
  * \param argc
@@ -10,7 +12,6 @@
 Editor::Editor(int argc, char* argv[])
     : QApplication(argc, argv)
     , m_mainWindow()
-    , m_logic(init_editor_logic())
 {
     hello_from_rust();
     const auto serialized = serialize_rust_struct();

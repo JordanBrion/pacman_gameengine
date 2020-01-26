@@ -5,9 +5,6 @@ use serde::{Deserialize, Serialize};
 use std::ffi::{CStr, CString};
 use std::os::raw::c_char;
 
-mod editor;
-use editor::EditorLogic;
-
 #[no_mangle]
 pub unsafe extern "C" fn hello_from_rust() {
     println!("Hello from Rust");
@@ -46,9 +43,4 @@ pub unsafe extern "C" fn serialize_rust_struct() -> *const c_char {
 #[no_mangle]
 pub unsafe extern "C" fn get_rust_instance() -> Point {
     Point { x: 1000, y: 2000 }
-}
-
-#[no_mangle]
-pub unsafe extern "C" fn init_editor_logic() -> EditorLogic {
-    EditorLogic { a: 500, b: 600 }
 }
