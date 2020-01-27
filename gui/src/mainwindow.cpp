@@ -11,14 +11,15 @@ MainWindow::MainWindow()
     : QMainWindow()
     , m_pUi(new Ui::MainWindow)
     , m_vulkanInstance()
-    , m_pContext(xxffi::create_vulkan_context())
+    , m_pContext(nullptr)
     , m_scene()
 {
     m_pUi->setupUi(this);
+    m_pContext = xxffi::create_vulkan_context();
+    m_vulkanInstance.setVkInstance(reinterpret_cast<VkInstance>(xxffi::get_vulkan_instance(m_pContext)));
     if (!m_vulkanInstance.create()) {
         qFatal("Cannot create vulkan instance");
     }
-    xxffi::import_vulkan_instance(m_pContext, reinterpret_cast<uint64_t>(m_vulkanInstance.vkInstance()));
     m_scene.setVulkanInstance(&m_vulkanInstance);
     QWidget *wrapper = QWidget::createWindowContainer(&m_scene);
     m_pUi->verticalLayout->addWidget(wrapper, 5);
