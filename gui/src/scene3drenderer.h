@@ -9,6 +9,7 @@ class Scene3dRenderer : public QVulkanWindowRenderer
 {
 public:
     Scene3dRenderer(QVulkanWindow& window,
+                    xxffi::VulkanContext& context,
                     bool msaa = false);
     void initResources() override;
     void initSwapChainResources() override;
@@ -18,6 +19,7 @@ public:
 protected:
     VkShaderModule createShader(const QString &name);
     QVulkanWindow& m_window;
+    xxffi::VulkanContext& m_context;
     QVulkanDeviceFunctions *m_devFuncs;
     VkDeviceMemory m_bufMem = VK_NULL_HANDLE;
     VkBuffer m_buf = VK_NULL_HANDLE;

@@ -20,8 +20,10 @@ static inline VkDeviceSize aligned(VkDeviceSize v, VkDeviceSize byteAlign)
     return (v + byteAlign - 1) & ~(byteAlign - 1);
 }
 Scene3dRenderer::Scene3dRenderer(QVulkanWindow& window,
+                                 xxffi::VulkanContext& context,
                                  bool msaa)
     : m_window(window)
+    , m_context(context)
 {
     if (msaa) {
         const QVector<int> counts = window.supportedSampleCounts();
