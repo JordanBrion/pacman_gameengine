@@ -15,15 +15,18 @@ use ash::vk::Handle;
 pub struct VulkanContext {
     entry: ash::Entry,
     instance: ash::Instance,
+    dimensions: ash::vk::Extent2D,
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn create_vulkan_context() -> *mut VulkanContext {
+pub unsafe extern "C" fn create_vulkan_context(width: u32, height: u32) -> *mut VulkanContext {
+    ;
     let entry = ash::Entry::new().expect("Cannot create entry");
     let instance = create_instance(&entry);
     let p_context = Box::new(VulkanContext {
         entry: entry,
         instance: instance,
+        dimensions: ash::vk::Extent2D { width: width, height: height }
     });
     Box::into_raw(p_context)
 }
