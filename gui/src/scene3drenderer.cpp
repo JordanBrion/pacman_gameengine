@@ -3,6 +3,8 @@
 #include <QVulkanFunctions>
 #include <QFile>
 
+#include <xxffi/xxffi.h>
+
 // Note that the vertex data and the projection matrix assume OpenGL. With
 // Vulkan Y is negated in clip space and the near/far plane is at 0/1 instead
 // of -1/1. These will be corrected for by an extra transformation when
@@ -17,16 +19,17 @@ static inline VkDeviceSize aligned(VkDeviceSize v, VkDeviceSize byteAlign)
 {
     return (v + byteAlign - 1) & ~(byteAlign - 1);
 }
-Scene3dRenderer::Scene3dRenderer(QVulkanWindow *w, bool msaa)
-    : m_window(w)
+Scene3dRenderer::Scene3dRenderer(QVulkanWindow& window,
+                                 bool msaa)
+    : m_window(window)
 {
     if (msaa) {
-        const QVector<int> counts = w->supportedSampleCounts();
+        const QVector<int> counts = window.supportedSampleCounts();
         qDebug() << "Supported sample counts:" << counts;
         for (int s = 16; s >= 4; s /= 2) {
             if (counts.contains(s)) {
                 qDebug("Requesting sample count %d", s);
-                m_window->setSampleCount(s);
+                m_window.setSampleCount(s);
                 break;
             }
         }
@@ -47,7 +50,7 @@ VkShaderModule Scene3dRenderer::createShader(const QString &name)
     shaderInfo.codeSize = blob.size();
     shaderInfo.pCode = reinterpret_cast<const uint32_t *>(blob.constData());
     VkShaderModule shaderModule;
-    VkResult err = m_devFuncs->vkCreateShaderModule(m_window->device(), &shaderInfo, nullptr, &shaderModule);
+    VkResult err = m_devFuncs->vkCreateShaderModule(m_window.device(), &shaderInfo, nullptr, &shaderModule);
     if (err != VK_SUCCESS) {
         qWarning("Failed to create shader module: %d", err);
         return VK_NULL_HANDLE;
@@ -57,8 +60,8 @@ VkShaderModule Scene3dRenderer::createShader(const QString &name)
 void Scene3dRenderer::initResources()
 {
     qDebug("initResources");
-    VkDevice dev = m_window->device();
-    m_devFuncs = m_window->vulkanInstance()->deviceFunctions(dev);
+    VkDevice dev = m_window.device();
+    m_devFuncs = m_window.vulkanInstance()->deviceFunctions(dev);
     // Prepare the vertex and uniform data. The vertex data will never
     // change so one buffer is sufficient regardless of the value of
     // QVulkanWindow::CONCURRENT_FRAME_COUNT. Uniform data is changing per
@@ -72,8 +75,8 @@ void Scene3dRenderer::initResources()
     // into the spec mandated minimum limit of 128 bytes. However, once that
     // limit is not sufficient, the per-frame buffers, as shown below, will
     // become necessary.
-    const int concurrentFrameCount = m_window->concurrentFrameCount();
-    const VkPhysicalDeviceLimits *pdevLimits = &m_window->physicalDeviceProperties()->limits;
+    const int concurrentFrameCount = m_window.concurrentFrameCount();
+    const VkPhysicalDeviceLimits *pdevLimits = &m_window.physicalDeviceProperties()->limits;
     const VkDeviceSize uniAlign = pdevLimits->minUniformBufferOffsetAlignment;
     qDebug("uniform buffer offset alignment is %u", (uint) uniAlign);
     VkBufferCreateInfo bufInfo;
@@ -93,7 +96,7 @@ void Scene3dRenderer::initResources()
         VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
         nullptr,
         memReq.size,
-        m_window->hostVisibleMemoryIndex()
+        m_window.hostVisibleMemoryIndex()
     };
     err = m_devFuncs->vkAllocateMemory(dev, &memAllocInfo, nullptr, &m_bufMem);
     if (err != VK_SUCCESS)
@@ -262,7 +265,7 @@ void Scene3dRenderer::initResources()
     memset(&ms, 0, sizeof(ms));
     ms.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
     // Enable multisampling.
-    ms.rasterizationSamples = m_window->sampleCountFlagBits();
+    ms.rasterizationSamples = m_window.sampleCountFlagBits();
     pipelineInfo.pMultisampleState = &ms;
     VkPipelineDepthStencilStateCreateInfo ds;
     memset(&ds, 0, sizeof(ds));
@@ -289,7 +292,7 @@ void Scene3dRenderer::initResources()
     dyn.pDynamicStates = dynEnable;
     pipelineInfo.pDynamicState = &dyn;
     pipelineInfo.layout = m_pipelineLayout;
-    pipelineInfo.renderPass = m_window->defaultRenderPass();
+    pipelineInfo.renderPass = m_window.defaultRenderPass();
     err = m_devFuncs->vkCreateGraphicsPipelines(dev, m_pipelineCache, 1, &pipelineInfo, nullptr, &m_pipeline);
     if (err != VK_SUCCESS)
         qFatal("Failed to create graphics pipeline: %d", err);
@@ -302,8 +305,8 @@ void Scene3dRenderer::initSwapChainResources()
 {
     qDebug("initSwapChainResources");
     // Projection matrix
-    m_proj = m_window->clipCorrectionMatrix(); // adjust for Vulkan-OpenGL clip space differences
-    const QSize sz = m_window->swapChainImageSize();
+    m_proj = m_window.clipCorrectionMatrix(); // adjust for Vulkan-OpenGL clip space differences
+    const QSize sz = m_window.swapChainImageSize();
     m_proj.perspective(45.0f, sz.width() / (float) sz.height(), 0.01f, 100.0f);
     m_proj.translate(0, 0, -4);
 }
@@ -314,7 +317,7 @@ void Scene3dRenderer::releaseSwapChainResources()
 void Scene3dRenderer::releaseResources()
 {
     qDebug("releaseResources");
-    VkDevice dev = m_window->device();
+    VkDevice dev = m_window.device();
     if (m_pipeline) {
         m_devFuncs->vkDestroyPipeline(dev, m_pipeline, nullptr);
         m_pipeline = VK_NULL_HANDLE;
@@ -346,9 +349,9 @@ void Scene3dRenderer::releaseResources()
 }
 void Scene3dRenderer::startNextFrame()
 {
-    VkDevice dev = m_window->device();
-    VkCommandBuffer cb = m_window->currentCommandBuffer();
-    const QSize sz = m_window->swapChainImageSize();
+    VkDevice dev = m_window.device();
+    VkCommandBuffer cb = m_window.currentCommandBuffer();
+    const QSize sz = m_window.swapChainImageSize();
     VkClearColorValue clearColor = {{ 0, 0, 0, 1 }};
     VkClearDepthStencilValue clearDS = { 1, 0 };
     VkClearValue clearValues[3];
@@ -358,16 +361,16 @@ void Scene3dRenderer::startNextFrame()
     VkRenderPassBeginInfo rpBeginInfo;
     memset(&rpBeginInfo, 0, sizeof(rpBeginInfo));
     rpBeginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-    rpBeginInfo.renderPass = m_window->defaultRenderPass();
-    rpBeginInfo.framebuffer = m_window->currentFramebuffer();
+    rpBeginInfo.renderPass = m_window.defaultRenderPass();
+    rpBeginInfo.framebuffer = m_window.currentFramebuffer();
     rpBeginInfo.renderArea.extent.width = sz.width();
     rpBeginInfo.renderArea.extent.height = sz.height();
-    rpBeginInfo.clearValueCount = m_window->sampleCountFlagBits() > VK_SAMPLE_COUNT_1_BIT ? 3 : 2;
+    rpBeginInfo.clearValueCount = m_window.sampleCountFlagBits() > VK_SAMPLE_COUNT_1_BIT ? 3 : 2;
     rpBeginInfo.pClearValues = clearValues;
-    VkCommandBuffer cmdBuf = m_window->currentCommandBuffer();
+    VkCommandBuffer cmdBuf = m_window.currentCommandBuffer();
     m_devFuncs->vkCmdBeginRenderPass(cmdBuf, &rpBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
     quint8 *p;
-    VkResult err = m_devFuncs->vkMapMemory(dev, m_bufMem, m_uniformBufInfo[m_window->currentFrame()].offset,
+    VkResult err = m_devFuncs->vkMapMemory(dev, m_bufMem, m_uniformBufInfo[m_window.currentFrame()].offset,
             UNIFORM_DATA_SIZE, 0, reinterpret_cast<void **>(&p));
     if (err != VK_SUCCESS)
         qFatal("Failed to map memory: %d", err);
@@ -379,7 +382,7 @@ void Scene3dRenderer::startNextFrame()
     m_rotation += 1.0f;
     m_devFuncs->vkCmdBindPipeline(cb, VK_PIPELINE_BIND_POINT_GRAPHICS, m_pipeline);
     m_devFuncs->vkCmdBindDescriptorSets(cb, VK_PIPELINE_BIND_POINT_GRAPHICS, m_pipelineLayout, 0, 1,
-                               &m_descSet[m_window->currentFrame()], 0, nullptr);
+                               &m_descSet[m_window.currentFrame()], 0, nullptr);
     VkDeviceSize vbOffset = 0;
     m_devFuncs->vkCmdBindVertexBuffers(cb, 0, 1, &m_buf, &vbOffset);
     VkViewport viewport;
@@ -396,6 +399,6 @@ void Scene3dRenderer::startNextFrame()
     m_devFuncs->vkCmdSetScissor(cb, 0, 1, &scissor);
     m_devFuncs->vkCmdDraw(cb, 3, 1, 0, 0);
     m_devFuncs->vkCmdEndRenderPass(cmdBuf);
-    m_window->frameReady();
-    m_window->requestUpdate(); // render continuously, throttled by the presentation rate
+    m_window.frameReady();
+    m_window.requestUpdate(); // render continuously, throttled by the presentation rate
 }

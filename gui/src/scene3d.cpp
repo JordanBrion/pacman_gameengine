@@ -10,5 +10,5 @@ Scene3d::Scene3d(xxffi::VulkanContext& context)
 
 QVulkanWindowRenderer *Scene3d::createRenderer()
 {
-    return new Scene3dRenderer(this);
+    return new Scene3dRenderer(*this);
 }
