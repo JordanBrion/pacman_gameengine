@@ -29,6 +29,12 @@ pub unsafe extern "C" fn create_vulkan_context() -> *mut VulkanContext {
     Box::into_raw(p_context)
 }
 
+#[no_mangle]
+pub unsafe extern "C" fn init_resources(p_context: *mut VulkanContext) {
+    println!("init res!!!!");
+}
+
+
 unsafe fn create_instance(entry: &ash::Entry) -> ash::Instance {
     let v_layers =
         vec![CString::new("VK_LAYER_KHRONOS_validation").expect("Cannot validation layer name")];
