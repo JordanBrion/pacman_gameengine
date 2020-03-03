@@ -2,6 +2,7 @@
 
 #include <QVulkanFunctions>
 #include <QVBoxLayout>
+#include <QDateTime>
 
 #include "scene3drenderer.h"
 
@@ -35,7 +36,8 @@ Ui::MainWindow* MainWindow::makeWindowUi(QMainWindow& window)
 
 void MainWindow::onTriggeredActionNewProject()
 {
-    qDebug() << "Creating new project !!";
+    const QString projectName = "jordan" + QString::number(QDateTime::currentDateTime().toSecsSinceEpoch());
+    xxffi::create_project(projectName.toStdString().c_str());
 }
 
 void MainWindow::ontriggeredActionNewClass()

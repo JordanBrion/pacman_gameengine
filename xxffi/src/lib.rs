@@ -10,6 +10,8 @@ use ash::version::EntryV1_0;
 use ash::version::InstanceV1_0;
 use ash::vk::Handle;
 
+use std::process::Command;
+
 // mod editor;
 
 pub struct VulkanContext {
@@ -18,8 +20,26 @@ pub struct VulkanContext {
 }
 
 #[no_mangle]
+pub unsafe extern "C" fn create_project(c_project_name: *const c_char) {
+    let project_name = CStr::from_ptr(c_project_name)
+        .as_ref()
+        .to_str()
+        .expect("Project name not valid");
+
+    let mut cmd_create_rust_project = Command::new("cargo");
+    cmd_create_rust_project
+        .arg("new")
+        .arg("--bin")
+        .arg(project_name);
+
+    cmd_create_rust_project.current_dir("/tmp/");
+    cmd_create_rust_project
+        .output()
+        .expect("failed to create game project");
+}
+
+#[no_mangle]
 pub unsafe extern "C" fn create_vulkan_context() -> *mut VulkanContext {
-    ;
     let entry = ash::Entry::new().expect("Cannot create entry");
     let instance = create_instance(&entry);
     let p_context = Box::new(VulkanContext {
@@ -33,7 +53,6 @@ pub unsafe extern "C" fn create_vulkan_context() -> *mut VulkanContext {
 pub unsafe extern "C" fn init_resources(p_context: *mut VulkanContext) {
     println!("init res!!!!");
 }
-
 
 unsafe fn create_instance(entry: &ash::Entry) -> ash::Instance {
     let v_layers =
