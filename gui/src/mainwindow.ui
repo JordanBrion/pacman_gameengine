@@ -35,8 +35,26 @@
      <height>25</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuProject">
+    <property name="title">
+     <string>Project</string>
+    </property>
+    <addaction name="actionNewProject"/>
+    <addaction name="actionNewClass"/>
+   </widget>
+   <addaction name="menuProject"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionNewProject">
+   <property name="text">
+    <string>New</string>
+   </property>
+  </action>
+  <action name="actionNewClass">
+   <property name="text">
+    <string>New class</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

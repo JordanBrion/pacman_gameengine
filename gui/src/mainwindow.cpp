@@ -28,5 +28,17 @@ Ui::MainWindow* MainWindow::makeWindowUi(QMainWindow& window)
 {
     Ui::MainWindow* pUi = new Ui::MainWindow;
     pUi->setupUi(&window);
+    connect(pUi->actionNewProject, &QAction::triggered, this, &MainWindow::onTriggeredActionNewProject);
+    connect(pUi->actionNewClass, &QAction::triggered, this, &MainWindow::ontriggeredActionNewClass);
     return pUi;
+}
+
+void MainWindow::onTriggeredActionNewProject()
+{
+    qDebug() << "Creating new project !!";
+}
+
+void MainWindow::ontriggeredActionNewClass()
+{
+    qDebug() << "Creating new class !!";
 }
